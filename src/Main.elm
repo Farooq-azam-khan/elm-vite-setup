@@ -6,14 +6,17 @@ import Html exposing (..)
 import Html.Attributes exposing (alt, class, href, src, target)
 import Html.Events exposing (onClick)
 import Url exposing (Url)
-
+import RemoteData exposing (RemoteData(..), WebData)
+import Api exposing (..) 
 
 type alias Model =
-    { count : Int, key : Nav.Key }
+    { users: WebData (List String), count : Int, key : Nav.Key }
 
 
 type Msg
     = Increment
+    | GetUsers
+    | UserMsg (WebData (List String))
     | Decrement
     | ChangedUrl Url
     | ClickedLink Browser.UrlRequest
@@ -28,6 +31,15 @@ view model =
             [ button [ class "bg-black px-5 py-1 text-white rounded-md", onClick Decrement ] [ text "-" ]
             , span [] [ model.count |> String.fromInt |> text ]
             , button [ class "bg-black px-5 py-1 text-white rounded-md", onClick Increment ] [ text "+" ]
+            ,div [class "mt-10"] 
+                [ button [ class "bg-gray-300 px-5 py-4 text-gray-800 rounded-md", onClick GetUsers] 
+                [text "Get Users"]
+                , case model.users of 
+                        NotAsked -> div [] [text "Not asked to get users"]
+                        Loading -> div [] [text "Loading users"]
+                        Success userlist -> ol [] (List.map (\user -> li [] [text user]) userlist)
+                        Failure _ -> div [] [text "an unknown error occured fetching users"]
+                ]
             ]
         ]
     }
@@ -36,6 +48,8 @@ view model =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
+        GetUsers -> ({model | users = Loading}, get_users_api UserMsg)
+        UserMsg users -> ({model | users = users}, Cmd.none)
         Increment ->
             ( { model | count = model.count + 1 }, Cmd.none )
 
@@ -61,7 +75,7 @@ subscriptions _ =
 
 init : flags -> Url -> Nav.Key -> ( Model, Cmd Msg )
 init _ url key =
-    ( { count = 0, key = key }, Cmd.none )
+    ( {users = NotAsked,  count = 0, key = key }, Cmd.none )
 
 
 main : Program () Model Msg
