@@ -14,15 +14,6 @@ type alias Model =
     { users : WebData (List String), count : Int, key : Nav.Key }
 
 
-type Msg
-    = Increment
-    | GetUsers
-    | UserMsg (WebData (List String))
-    | Decrement
-    | ChangedUrl Url
-    | ClickedLink Browser.UrlRequest
-
-
 view : Model -> Browser.Document Msg
 view model =
     { title = "counter"
