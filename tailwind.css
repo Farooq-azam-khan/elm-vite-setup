@@ -4,7 +4,12 @@
 
 
 .toasty-container  {
-    @apply shadow-xl flex flex-col items-start justify-center w-full h-full cursor-pointer ease-in px-3 py-2 rounded-lg ml-2 mb-3 text-slate-200 bg-gradient-to-r from-[rgba(87,143,227,1)] to-[rgba(14,93,214,1)]
+    @apply shadow-xl flex flex-col items-start justify-center w-full h-full cursor-pointer ease-in px-3 py-2 rounded-lg ml-2 mb-3 
+}
+
+.toasty-success {
+    @apply text-slate-200 bg-gradient-to-r from-blue-500 to-blue-700
+
 }
 
 .toasty-title {

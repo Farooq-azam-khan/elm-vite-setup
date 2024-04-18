@@ -9,8 +9,8 @@ import Toasty.Defaults
 toast_config : Toasty.Config msg
 toast_config =
     Toasty.Defaults.config
-        |> Toasty.delay 3000
-        |> Toasty.transitionOutDuration 500
+        -- |> Toasty.delay 3000
+        -- |> Toasty.transitionOutDuration 500
         |> Toasty.containerAttrs
             [ Attr.style "max-width" "1000px"
             , Attr.style "position" "fixed"
