@@ -32,5 +32,9 @@ addToast : (Toasty.Msg Toasty.Defaults.Toast -> msg) -> Toasty.Defaults.Toast ->
 addToast msg toast ( model, cmd ) =
     Toasty.addToast toast_config msg toast ( model, cmd )
 
+addPersistantToast : (Toasty.Msg Toasty.Defaults.Toast -> msg) -> Toasty.Defaults.Toast -> ( { m | toasties : Toasty.Stack Toasty.Defaults.Toast }, Cmd msg ) -> ( { m | toasties : Toasty.Stack Toasty.Defaults.Toast }, Cmd msg )
+addPersistantToast msg toast ( model, cmd ) =
+    Toasty.addPersistentToast toast_config msg toast ( model, cmd )
+
 
 

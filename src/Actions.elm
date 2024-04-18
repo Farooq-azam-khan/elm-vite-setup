@@ -13,10 +13,12 @@ import Toasty.Defaults
 import Types exposing (..)
 import Url exposing (Url)
 import Utils exposing (..)
+import ToastMessages exposing (..) 
 
 type Msg
     = Increment
     | GetUsers
+    | ToastyMsg (Toasty.Msg Toasty.Defaults.Toast)
     | UserMsg (WebData (List String))
     | Decrement
     | ChangedUrl Url
@@ -25,11 +27,15 @@ type Msg
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
+        
+        ToastyMsg subMsg -> Toasty.update toast_config ToastyMsg subMsg model 
+
         GetUsers ->
             ( { model | users = Loading }, get_users_api UserMsg )
 
         UserMsg users ->
-            ( { model | users = users }, Cmd.none )
+            ( { model | users = users }, Cmd.none ) 
+            |> addPersistantToast ToastyMsg (Toasty.Defaults.Success "Update!" "got users")
 
         Increment ->
             ( { model | count = model.count |> update_by 1 }, Cmd.none )

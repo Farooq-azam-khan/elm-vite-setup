@@ -1,5 +1,8 @@
 module Main exposing (main)
 
+import ToastMessages exposing (..)
+import Toasty.Defaults
+import Toasty 
 import Types exposing (..)
 import Api exposing (..)
 import Browser
@@ -37,13 +40,14 @@ view model =
                         div [] [ text "an unknown error occured fetching users" ]
                 ]
             ]
+        , Toasty.view toast_config Toasty.Defaults.view ToastyMsg model.toasties
         ]
     }
 
 
 init : flags -> Url -> Nav.Key -> ( Model, Cmd Msg )
 init _ url key =
-    ( { users = NotAsked, count = 0, key = key }, Cmd.none )
+    ( init_model key, Cmd.none )
 
 
 main : Program () Model Msg

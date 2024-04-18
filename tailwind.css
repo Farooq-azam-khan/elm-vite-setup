@@ -1,3 +1,123 @@
 @import "tailwindcss/base";
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
+
+
+.toasty-container  {
+    @apply shadow-xl flex flex-col items-start justify-center w-full h-full cursor-pointer ease-in px-3 py-2 rounded-lg ml-2 mb-3 text-slate-200 bg-gradient-to-r from-[rgba(87,143,227,1)] to-[rgba(14,93,214,1)]
+}
+
+.toasty-title {
+    @apply text-sm font-medium
+}
+
+.toasty-message {
+    @apply text-sm 
+}
+
+.toasty-error {
+    @apply text-slate-200 bg-gradient-to-r from-red-200 to-red-500
+}
+
+.animated {
+    animation-duration: 1s;
+    animation-fill-mode: both;
+}
+
+
+@keyframes bounceInRight {
+    from, 60%, 75%, 90%, to {
+        animation-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);
+    }
+
+    from {
+        opacity: 0;
+        transform: translate3d(3000px, 0, 0);
+    }
+
+    60% {
+        opacity: 1;
+        transform: translate3d(-25px, 0, 0);
+    }
+
+    75% {
+        transform: translate3d(10px, 0, 0);
+    }
+
+    90% {
+        transform: translate3d(-5px, 0, 0);
+    }
+
+    to {
+        transform: none;
+    }
+}
+  
+.bounceInRight {
+animation-name: bounceInRight;
+}
+
+@keyframes moveUpKeyFrames {
+    from, 60%, 75%, 90%, to {
+        animation-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);
+    }
+
+    
+    from {
+        opacity: 0;
+        transform: translate3d(0, 3000px, 0);
+    }
+
+    60% {
+        opacity: 1;
+        transform: translate3d(0, 50px, 0);
+    }
+
+    75% {
+        transform: translate3d(0, 10px, 0);
+    }
+
+    90% {
+        transform: translate3d(0, 0px, 0);
+    }
+
+    to {
+        transform: none;
+    }
+    
+}
+
+.moveUpAnimation {
+    animation-name: moveUpKeyFrames;
+}
+
+@keyframes fadeOutRightBig {
+    from {
+        opacity: 1;
+    }
+
+    to {
+        opacity: 0;
+        transform: translate3d(2000px, 0, 0);
+    }
+    }
+
+    .fadeOutRightBig {
+    animation-name: fadeOutRightBig;
+} 
+
+@keyframes moveDownKeyFrames {
+    from {
+        opacity: 1;
+    }
+
+    to {
+        opacity: 0;
+        transform: translate3d(0, 2000px, 0);
+    }
+    
+
+}
+.moveDownAnimation {
+    animation-name: moveDownKeyFrames;
+}
