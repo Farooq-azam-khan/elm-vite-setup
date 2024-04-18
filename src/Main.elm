@@ -1,5 +1,6 @@
 module Main exposing (main)
 
+import Types exposing (..)
 import Api exposing (..)
 import Browser
 import Browser.Navigation as Nav
@@ -9,10 +10,6 @@ import Html.Events exposing (onClick)
 import RemoteData exposing (RemoteData(..), WebData)
 import Url exposing (Url)
 import Actions exposing (..)
-
-type alias Model =
-    { users : WebData (List String), count : Int, key : Nav.Key }
-
 
 view : Model -> Browser.Document Msg
 view model =

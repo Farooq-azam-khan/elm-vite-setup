@@ -24,6 +24,6 @@ match_route : UP.Parser (Route -> a) a
 match_route =
     UP.oneOf
         [ UP.map HomeRoute UP.top
-        , UP.map User UP.string
+        , UP.map UserRoute UP.string
         ]
 

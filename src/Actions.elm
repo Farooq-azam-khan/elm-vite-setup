@@ -1,7 +1,18 @@
 module Actions exposing (..)
-import RemoteData exposing (WebData) 
-import Url exposing (Url) 
-import Ports 
+import Api exposing (..)
+import Browser
+import Browser.Navigation as Nav
+import Http
+import Ports
+import RemoteData exposing (RemoteData(..), WebData)
+import Route exposing (..)
+import Time exposing (Month(..))
+import ToastMessages exposing (..)
+import Toasty
+import Toasty.Defaults
+import Types exposing (..)
+import Url exposing (Url)
+import Utils exposing (..)
 
 type Msg
     = Increment
@@ -21,10 +32,10 @@ update msg model =
             ( { model | users = users }, Cmd.none )
 
         Increment ->
-            ( { model | count = model.count + 1 }, Cmd.none )
+            ( { model | count = model.count |> update_by 1 }, Cmd.none )
 
         Decrement ->
-            ( { model | count = model.count - 1 }, Cmd.none )
+            ( { model | count = model.count  |> update_by (-1) }, Cmd.none )
 
         ChangedUrl url ->
             ( model, Cmd.none )
