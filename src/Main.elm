@@ -1,18 +1,19 @@
 module Main exposing (main)
 
-import ToastMessages exposing (..)
-import Toasty.Defaults
-import Toasty 
-import Types exposing (..)
+import Actions exposing (..)
 import Api exposing (..)
 import Browser
 import Browser.Navigation as Nav
 import Html exposing (..)
-import Html.Attributes exposing (alt, class, href, src, target)
+import Html.Attributes exposing (class)
 import Html.Events exposing (onClick)
-import RemoteData exposing (RemoteData(..), WebData)
+import RemoteData exposing (RemoteData(..))
+import ToastMessages exposing (..)
+import Toasty
+import Toasty.Defaults
+import Types exposing (..)
 import Url exposing (Url)
-import Actions exposing (..)
+
 
 view : Model -> Browser.Document Msg
 view model =
@@ -20,7 +21,31 @@ view model =
     , body =
         [ div
             [ class "mx-5 sm:mx-0 sm:mx-auto lg sm:max-w-xl lg:max-w-3xl mt-10 space-x-10" ]
-            [ button [ class "bg-black px-5 py-1 text-white rounded-md", onClick Decrement ] [ text "-" ]
+            [ h3 [ class "flex space-x-5 py-3" ]
+                [ span []
+                    [ case model.server_version of
+                        Loading ->
+                            text "server version: loading version..."
+
+                        NotAsked ->
+                            text "server version: not asked"
+
+                        Success version ->
+                            text <| "server version: " ++ version
+
+                        Failure _ ->
+                            text <| "server version: failed to get version"
+                    ]
+                , span []
+                    [ case model.local_version of
+                        Nothing ->
+                            text "local version: not stored yet"
+
+                        Just version ->
+                            text <| "local version: " ++ version
+                    ]
+                ]
+            , button [ class "bg-black px-5 py-1 text-white rounded-md", onClick Decrement ] [ text "-" ]
             , span [] [ model.count |> String.fromInt |> text ]
             , button [ class "bg-black px-5 py-1 text-white rounded-md", onClick Increment ] [ text "+" ]
             , div [ class "mt-10" ]
@@ -45,12 +70,23 @@ view model =
     }
 
 
-init : flags -> Url -> Nav.Key -> ( Model, Cmd Msg )
-init _ url key =
-    ( init_model key, Cmd.none )
+type alias Flags =
+    { local_version : Maybe String }
 
 
-main : Program () Model Msg
+init : Flags -> Url -> Nav.Key -> ( Model, Cmd Msg )
+init flags url key =
+    let
+        _ =
+            Debug.log "flags in elm" flags
+
+        _ =
+            Debug.log "url in elm" url
+    in
+    ( init_model key |> (\m -> { m | local_version = flags.local_version, server_version = Loading }), api_get_version Version )
+
+
+main : Program Flags Model Msg
 main =
     Browser.application
         { init = init

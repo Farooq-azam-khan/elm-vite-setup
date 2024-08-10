@@ -12,6 +12,18 @@ encode_user =
     E.object [ ( "email", E.string "test@gmail.com" ), ( "username", E.string "test" ) ]
 
 
+api_get_version : (WebData String -> msg) -> Cmd msg
+api_get_version msg =
+    "/api/version/latest"
+        |> HttpBuilder.get
+        |> HttpBuilder.withExpect
+            (Http.expectJson
+                (RemoteData.fromResult >> msg)
+                D.string
+            )
+        |> HttpBuilder.request
+
+
 get_users_api : (WebData (List String) -> msg) -> Cmd msg
 get_users_api msg =
     "/api/user"
