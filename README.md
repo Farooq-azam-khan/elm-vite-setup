@@ -1,5 +1,13 @@
+# SPA Tech Stack
 
-```bash 
-pnpm install 
-pnpm upgrade 
+`vite`
+`tailwindcss`
+`elm-lang`
+`elm-test`
+`elm-test coverage`
+`typescript`
+
+```bash
+pnpm install
+pnpm upgrade
 ```
