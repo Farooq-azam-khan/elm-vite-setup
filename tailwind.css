@@ -2,22 +2,25 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
+.debug {
+    border: 1px solid red;
+  }
 
 .toasty-container  {
-    @apply shadow-xl flex flex-col items-start justify-center w-full h-full cursor-pointer ease-in px-3 py-2 rounded-lg ml-2 mb-3 
+    @apply shadow-xl flex flex-col items-start justify-center w-full h-full cursor-pointer ease-in px-5 py-3 rounded-lg ml-2 mb-3  bg-gray-800 text-gray-100 space-y-2;
+}
+
+.toasty-title {
+  @apply text-sm font-medium;
+}
+
+.toasty-message {
+    @apply text-sm 
 }
 
 .toasty-success {
     @apply text-slate-200 bg-gradient-to-r from-blue-500 to-blue-700
 
-}
-
-.toasty-title {
-    @apply text-sm font-medium
-}
-
-.toasty-message {
-    @apply text-sm 
 }
 
 .toasty-error {
@@ -57,7 +60,7 @@
         transform: none;
     }
 }
-  
+
 .bounceInRight {
 animation-name: bounceInRight;
 }
@@ -66,8 +69,6 @@ animation-name: bounceInRight;
     from, 60%, 75%, 90%, to {
         animation-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);
     }
-
-    
     from {
         opacity: 0;
         transform: translate3d(0, 3000px, 0);
@@ -120,9 +121,8 @@ animation-name: bounceInRight;
         opacity: 0;
         transform: translate3d(0, 2000px, 0);
     }
-    
-
 }
+
 .moveDownAnimation {
     animation-name: moveDownKeyFrames;
 }

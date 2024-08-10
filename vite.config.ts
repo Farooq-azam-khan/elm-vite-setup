@@ -40,17 +40,6 @@ export default defineConfig({
 
             }
         }
-        // {
-        //     '/api': {
-        //         target: 'http://127.0.0.1:8000',
-        //         changeOrigin: true,
-        //         rewrite: (path) => {
-        //             console.log('running path2', path)
-        //             return path// .replace(/^\/api/, '')
-        //         }
-
-        //     }
-        // }
     },
     plugins: [elmPlug()]
 })
