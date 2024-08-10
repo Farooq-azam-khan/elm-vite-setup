@@ -76,13 +76,6 @@ type alias Flags =
 
 init : Flags -> Url -> Nav.Key -> ( Model, Cmd Msg )
 init flags url key =
-    let
-        _ =
-            Debug.log "flags in elm" flags
-
-        _ =
-            Debug.log "url in elm" url
-    in
     ( init_model key |> (\m -> { m | local_version = flags.local_version, server_version = Loading }), api_get_version Version )
 
 
