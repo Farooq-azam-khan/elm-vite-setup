@@ -14,8 +14,9 @@ encode_user =
 
 get_users_api : (WebData (List String) -> msg) -> Cmd msg
 get_users_api msg =
-    HttpBuilder.post "/api/user"
-        |> HttpBuilder.withJsonBody encode_user
+    "/api/user"
+        |> HttpBuilder.get
+        -- |> HttpBuilder.withJsonBody encode_user
         |> HttpBuilder.withTimeout 10000
         |> HttpBuilder.withExpect
             (Http.expectJson
