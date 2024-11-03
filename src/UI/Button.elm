@@ -86,10 +86,6 @@ get_button_size_styles sz =
             ""
 
 
-
--- TODO: figure out how to deal with disabled buttons
-
-
 button : { a | variant : ButtonVariant, size : ButtonSize } -> List (Html.Attribute msg) -> List (Html msg) -> Html msg
 button config attr children =
     Html.button

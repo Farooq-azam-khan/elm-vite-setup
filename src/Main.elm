@@ -5,7 +5,7 @@ import Api exposing (..)
 import Browser
 import Browser.Navigation as Nav
 import Html exposing (..)
-import Html.Attributes as Attr exposing (attribute, class)
+import Html.Attributes as Attr exposing (class)
 import Html.Events exposing (onClick)
 import RemoteData exposing (RemoteData(..))
 import Route exposing (Route(..), parse_url)
