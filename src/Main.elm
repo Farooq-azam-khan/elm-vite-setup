@@ -36,27 +36,18 @@ components_page { user_profile_dialog } =
                 ]
             ]
         , Html.map UserProfileDialogMsg <|
-            Dialog.dialog []
-                [ Dialog.dialog_trigger
+            Dialog.dialog user_profile_dialog
+                []
+                [ Dialog.dialog_trigger user_profile_dialog
                     (Button.button { variant = Button.Outline, size = Button.DefaultSize })
-                    [ Dialog.aria_expanded user_profile_dialog.open_close_state
-                    , Dialog.data_state user_profile_dialog.open_close_state
-                    , Attr.attribute "aria-controls" <| user_profile_dialog.dialog_id ++ "-controls"
-                    , Attr.attribute "aria-describeby" <| user_profile_dialog.dialog_id ++ "-describe"
-                    , Attr.attribute "aria-labelby" <| user_profile_dialog.dialog_id ++ "-label"
-                    , onClick Dialog.OpenDialog
-                    ]
+                    []
                     [ text "Edit Profile" ]
-                , Dialog.dialog_content
-                    [ Attr.id <| user_profile_dialog.dialog_id ++ "-controls"
-                    , Dialog.data_state user_profile_dialog.open_close_state
-                    , Attr.attribute "aria-describeby" <| user_profile_dialog.dialog_id ++ "-describe"
-                    , Attr.attribute "aria-labelby" <| user_profile_dialog.dialog_id ++ "-label"
-                    , class "sm:max-w-[425px]"
+                , Dialog.dialog_content user_profile_dialog
+                    [ class "sm:max-w-[425px]"
                     ]
                     [ Dialog.dialog_header []
-                        [ Dialog.dialog_title [ Attr.id <| user_profile_dialog.dialog_id ++ "-label" ] [ text "Edit profile" ]
-                        , Dialog.dialog_description [ Attr.id <| user_profile_dialog.dialog_id ++ "-describe" ] [ text "Make changes to your profile." ]
+                        [ Dialog.dialog_title user_profile_dialog [] [ text "Edit profile" ]
+                        , Dialog.dialog_description user_profile_dialog [] [ text "Make changes to your profile." ]
                         ]
                     , div [ class "grid gap-4 py-4" ]
                         [ div [ class "grid grid-cols-4 items-center gap-4" ]

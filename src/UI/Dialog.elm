@@ -44,13 +44,17 @@ toggle_open_closed_state pstate =
 
 aria_expanded : OpenClosedState -> Attribute msg
 aria_expanded state =
-    Attr.attribute "aria-expanded" <|
-        case state of
-            OpenState ->
-                "true"
+    state |> aria_state |> Attr.attribute "aria-expanded"
 
-            ClosedState ->
-                "false"
+
+aria_state : OpenClosedState -> String
+aria_state state =
+    case state of
+        OpenState ->
+            "true"
+
+        ClosedState ->
+            "false"
 
 
 data_state : OpenClosedState -> Attribute msg
@@ -92,18 +96,37 @@ update_dialog d_msg d_model =
             { d_model | open_close_state = toggle_open_closed_state d_model.open_close_state }
 
 
-dialog : List (Attribute msg) -> List (Html msg) -> Html msg
-dialog attrs children =
-    div attrs children
+dialog : DialogModel -> List (Attribute DialogMsg) -> List (Html DialogMsg) -> Html DialogMsg
+dialog dialog_model attrs children =
+    div attrs
+        (button
+            [ data_state dialog_model.open_close_state
+            , Attr.class """data-[state=closed]:invisible cursor-default fixed inset-0 z-50 bg-black/80  data-[state=open]:animate-in 
+            data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0"""
+            , Attr.attribute "data-aria-hidden" (aria_state dialog_model.open_close_state)
+            , Attr.attribute "aria-hidden" (aria_state dialog_model.open_close_state)
+            , onClick CloseDialog
+            ]
+            []
+            :: children
+        )
 
 
-dialog_content : List (Attribute DialogMsg) -> List (Html DialogMsg) -> Html DialogMsg
-dialog_content attrs children =
+dialog_content : DialogModel -> List (Attribute DialogMsg) -> List (Html DialogMsg) -> Html DialogMsg
+dialog_content dialog_model attrs children =
     div
         (attrs
             ++ [ Attr.attribute "role" "dialog"
-               , class "fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border bg-background p-6 shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%] sm:rounded-lg sm:max-w-[425px]"
+               , data_state dialog_model.open_close_state
                , Attr.tabindex -1
+               , Attr.id <| dialog_model.dialog_id ++ "-controls"
+               , Attr.attribute "aria-describeby" <| dialog_model.dialog_id ++ "-describe"
+               , Attr.attribute "aria-labelby" <| dialog_model.dialog_id ++ "-label"
+               , class """data-[state=closed]:invisible fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border bg-background p-6 
+                        shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 
+                        data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 
+                        data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%] sm:rounded-lg sm:max-w-[425px]
+                """
                ]
         )
         (children
@@ -116,9 +139,9 @@ dialog_content attrs children =
         )
 
 
-dialog_description : List (Attribute msg) -> List (Html msg) -> Html msg
-dialog_description attrs children =
-    div (attrs ++ [ class "text-sm text-muted-foreground" ]) children
+dialog_description : DialogModel -> List (Attribute msg) -> List (Html msg) -> Html msg
+dialog_description dialog_model attrs children =
+    div (attrs ++ [ Attr.id <| dialog_model.dialog_id ++ "-describe", class "text-sm text-muted-foreground" ]) children
 
 
 dialog_footer : List (Attribute msg) -> List (Html msg) -> Html msg
@@ -131,17 +154,23 @@ dialog_header attrs children =
     div (attrs ++ [ class "flex flex-col space-y-1.5 text-center sm:text-left" ]) children
 
 
-dialog_title : List (Attribute msg) -> List (Html msg) -> Html msg
-dialog_title attrs children =
-    h2 (attrs ++ [ class "text-lg font-semibold leading-none tracking-tight" ]) children
+dialog_title : DialogModel -> List (Attribute msg) -> List (Html msg) -> Html msg
+dialog_title dialog_model attrs children =
+    h2 (attrs ++ [ Attr.id <| dialog_model.dialog_id ++ "-label", class "text-lg font-semibold leading-none tracking-tight" ]) children
 
 
-dialog_trigger : (List (Attribute msg) -> List (Html msg) -> Html msg) -> List (Attribute msg) -> List (Html msg) -> Html msg
-dialog_trigger trigger_element attrs children =
+dialog_trigger : DialogModel -> (List (Attribute DialogMsg) -> List (Html DialogMsg) -> Html DialogMsg) -> List (Attribute DialogMsg) -> List (Html DialogMsg) -> Html DialogMsg
+dialog_trigger dialog_model trigger_element attrs children =
     trigger_element
         (attrs
             ++ [ Attr.type_ "button"
                , aria_haspopup "dialog"
+               , aria_expanded dialog_model.open_close_state
+               , data_state dialog_model.open_close_state
+               , Attr.attribute "aria-controls" <| dialog_model.dialog_id ++ "-controls"
+               , Attr.attribute "aria-describeby" <| dialog_model.dialog_id ++ "-describe"
+               , Attr.attribute "aria-labelby" <| dialog_model.dialog_id ++ "-label"
+               , onClick OpenDialog
                ]
         )
         children
