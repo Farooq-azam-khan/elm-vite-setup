@@ -1,6 +1,6 @@
 import type { Config } from 'tailwindcss'
 import typography from '@tailwindcss/typography'
-import tw_animated from 'tailwindcss-animated'
+import tw_animate from 'tailwindcss-animate'
 import { fontFamily } from "tailwindcss/defaultTheme"
 
 
@@ -79,6 +79,6 @@ export default {
     },
   },
   plugins: [
-    typography, tw_animated
+    typography, tw_animate
   ],
 } satisfies Config
