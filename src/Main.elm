@@ -12,6 +12,8 @@ import ToastMessages exposing (..)
 import Toasty
 import Toasty.Defaults
 import Types exposing (..)
+import UI.Button as Button
+import UI.Card as Card
 import Url exposing (Url)
 
 
@@ -21,48 +23,58 @@ view model =
     , body =
         [ div
             [ class "mx-5 sm:mx-0 sm:mx-auto lg sm:max-w-xl lg:max-w-3xl mt-10 space-x-10" ]
-            [ h3 [ class "flex space-x-5 py-3" ]
-                [ span []
-                    [ case model.server_version of
-                        Loading ->
-                            text "server version: loading version..."
+            [ Card.card []
+                [ Card.card_header []
+                    [ Card.card_title [ class "flex space-x-5 py-3" ]
+                        [ span []
+                            [ case model.server_version of
+                                Loading ->
+                                    text "server version: loading version..."
 
-                        NotAsked ->
-                            text "server version: not asked"
+                                NotAsked ->
+                                    text "server version: not asked"
 
-                        Success version ->
-                            text <| "server version: " ++ version
+                                Success version ->
+                                    text <| "server version: " ++ version
 
-                        Failure _ ->
-                            text <| "server version: failed to get version"
+                                Failure _ ->
+                                    text <| "server version: failed to get version"
+                            ]
+                        , span []
+                            [ case model.local_version of
+                                Nothing ->
+                                    text "local version: not stored yet"
+
+                                Just version ->
+                                    text <| "local version: " ++ version
+                            ]
+                        ]
                     ]
-                , span []
-                    [ case model.local_version of
-                        Nothing ->
-                            text "local version: not stored yet"
+                , Card.card_content
+                    []
+                    [ div []
+                        [ Button.button { variant = Button.DefaultVariant, size = Button.Icon } [ onClick Decrement ] [ text "-" ]
+                        , span [] [ model.count |> String.fromInt |> text ]
+                        , Button.button { variant = Button.DefaultVariant, size = Button.Icon } [ onClick Increment ] [ text "+" ]
+                        ]
+                    , div [ class "mt-10" ]
+                        [ Button.button { variant = Button.DefaultVariant, size = Button.DefaultSize }
+                            [ onClick GetUsers ]
+                            [ text "Get Users" ]
+                        , case model.users of
+                            NotAsked ->
+                                div [] [ text "Not asked to get users" ]
 
-                        Just version ->
-                            text <| "local version: " ++ version
+                            Loading ->
+                                div [] [ text "Loading users" ]
+
+                            Success userlist ->
+                                ol [] (List.map (\user -> li [] [ text user ]) userlist)
+
+                            Failure _ ->
+                                div [] [ text "an unknown error occured fetching users" ]
+                        ]
                     ]
-                ]
-            , button [ class "bg-black px-5 py-1 text-white rounded-md", onClick Decrement ] [ text "-" ]
-            , span [] [ model.count |> String.fromInt |> text ]
-            , button [ class "bg-black px-5 py-1 text-white rounded-md", onClick Increment ] [ text "+" ]
-            , div [ class "mt-10" ]
-                [ button [ class "bg-gray-300 px-5 py-4 text-gray-800 rounded-md", onClick GetUsers ]
-                    [ text "Get Users" ]
-                , case model.users of
-                    NotAsked ->
-                        div [] [ text "Not asked to get users" ]
-
-                    Loading ->
-                        div [] [ text "Loading users" ]
-
-                    Success userlist ->
-                        ol [] (List.map (\user -> li [] [ text user ]) userlist)
-
-                    Failure _ ->
-                        div [] [ text "an unknown error occured fetching users" ]
                 ]
             ]
         , Toasty.view toast_config Toasty.Defaults.view ToastyMsg model.toasties
@@ -75,7 +87,7 @@ type alias Flags =
 
 
 init : Flags -> Url -> Nav.Key -> ( Model, Cmd Msg )
-init flags url key =
+init flags _ key =
     ( init_model key |> (\m -> { m | local_version = flags.local_version, server_version = Loading }), api_get_version Version )
 
 
