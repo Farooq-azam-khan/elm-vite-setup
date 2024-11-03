@@ -5,9 +5,10 @@ import Url.Parser as UP
 
 
 type Route
-    = HomeRoute
-    | UserRoute String
-    | NotFound
+    = HomeR
+    | UserR String
+    | ComponentsR
+    | NotFoundR
 
 
 parse_url : Url -> Route
@@ -17,13 +18,13 @@ parse_url url =
             route
 
         Nothing ->
-            NotFound
+            NotFoundR
 
 
 match_route : UP.Parser (Route -> a) a
 match_route =
     UP.oneOf
-        [ UP.map HomeRoute UP.top
-        , UP.map UserRoute UP.string
+        [ UP.map HomeR UP.top
+        , UP.map ComponentsR (UP.s "components")
+        , UP.map UserR UP.string
         ]
-

@@ -9,6 +9,14 @@ import Html.Attributes as Attr exposing (class)
 -- https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Roles/dialog_role
 
 
+init =
+    ()
+
+
+update =
+    ()
+
+
 dialog : List (Attribute msg) -> List (Html msg) -> Html msg
 dialog attrs children =
     div attrs children

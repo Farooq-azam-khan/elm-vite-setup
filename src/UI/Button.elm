@@ -4,6 +4,11 @@ import Html exposing (Html)
 import Html.Attributes as Attr
 
 
+
+-- docs: https://developer.mozilla.org/en-US/docs/Web/HTML/Element/button
+-- https://ui.shadcn.com/docs/components/button
+
+
 type ButtonVariant
     = DefaultVariant
     | Destructive

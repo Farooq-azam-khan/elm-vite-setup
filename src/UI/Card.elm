@@ -4,6 +4,10 @@ import Html exposing (..)
 import Html.Attributes exposing (class)
 
 
+
+-- https://ui.shadcn.com/docs/components/card
+
+
 card_header : List (Attribute msg) -> List (Html msg) -> Html msg
 card_header attrs children =
     div
@@ -28,7 +32,7 @@ card_content attrs children =
 
 card_footer : List (Attribute msg) -> List (Html msg) -> Html msg
 card_footer attrs children =
-    div (attrs ++ [ class "flex items-center p-6 pt-0" ]) children
+    div (attrs ++ [ class "flex items-center justify-between p-6 pt-0" ]) children
 
 
 card : List (Attribute msg) -> List (Html msg) -> Html msg
