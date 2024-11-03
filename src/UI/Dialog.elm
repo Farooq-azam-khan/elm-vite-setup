@@ -1,8 +1,6 @@
 module UI.Dialog exposing
     ( DialogModel
     , DialogMsg(..)
-    , aria_expanded
-    , data_state
     , dialog
     , dialog_content
     , dialog_description
@@ -25,47 +23,6 @@ import UI.Icons as Icons
 
 -- https://ui.shadcn.com/docs/components/dialog
 -- https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Roles/dialog_role
-
-
-type OpenClosedState
-    = OpenState
-    | ClosedState
-
-
-toggle_open_closed_state : OpenClosedState -> OpenClosedState
-toggle_open_closed_state pstate =
-    case pstate of
-        OpenState ->
-            ClosedState
-
-        ClosedState ->
-            OpenState
-
-
-aria_expanded : OpenClosedState -> Attribute msg
-aria_expanded state =
-    state |> aria_state |> Attr.attribute "aria-expanded"
-
-
-aria_state : OpenClosedState -> String
-aria_state state =
-    case state of
-        OpenState ->
-            "true"
-
-        ClosedState ->
-            "false"
-
-
-data_state : OpenClosedState -> Attribute msg
-data_state state =
-    Attr.attribute "data-state" <|
-        case state of
-            OpenState ->
-                "open"
-
-            ClosedState ->
-                "closed"
 
 
 type alias DialogModel =
@@ -96,9 +53,13 @@ update_dialog d_msg d_model =
             { d_model | open_close_state = toggle_open_closed_state d_model.open_close_state }
 
 
+
+-- views
+
+
 dialog : DialogModel -> List (Attribute DialogMsg) -> List (Html DialogMsg) -> Html DialogMsg
 dialog dialog_model attrs children =
-    div attrs
+    div (attrs ++ [ data_state dialog_model.open_close_state ])
         (button
             [ data_state dialog_model.open_close_state
             , Attr.class """data-[state=closed]:invisible cursor-default fixed inset-0 z-50 bg-black/80  data-[state=open]:animate-in 
@@ -144,13 +105,13 @@ dialog_description dialog_model attrs children =
     div (attrs ++ [ Attr.id <| dialog_model.dialog_id ++ "-describe", class "text-sm text-muted-foreground" ]) children
 
 
-dialog_footer : List (Attribute msg) -> List (Html msg) -> Html msg
-dialog_footer attrs children =
+dialog_footer : DialogModel -> List (Attribute msg) -> List (Html msg) -> Html msg
+dialog_footer _ attrs children =
     div (attrs ++ [ class "flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2" ]) children
 
 
-dialog_header : List (Attribute msg) -> List (Html msg) -> Html msg
-dialog_header attrs children =
+dialog_header : DialogModel -> List (Attribute msg) -> List (Html msg) -> Html msg
+dialog_header _ attrs children =
     div (attrs ++ [ class "flex flex-col space-y-1.5 text-center sm:text-left" ]) children
 
 
@@ -159,7 +120,12 @@ dialog_title dialog_model attrs children =
     h2 (attrs ++ [ Attr.id <| dialog_model.dialog_id ++ "-label", class "text-lg font-semibold leading-none tracking-tight" ]) children
 
 
-dialog_trigger : DialogModel -> (List (Attribute DialogMsg) -> List (Html DialogMsg) -> Html DialogMsg) -> List (Attribute DialogMsg) -> List (Html DialogMsg) -> Html DialogMsg
+dialog_trigger :
+    DialogModel
+    -> (List (Attribute DialogMsg) -> List (Html DialogMsg) -> Html DialogMsg)
+    -> List (Attribute DialogMsg)
+    -> List (Html DialogMsg)
+    -> Html DialogMsg
 dialog_trigger dialog_model trigger_element attrs children =
     trigger_element
         (attrs
@@ -169,7 +135,7 @@ dialog_trigger dialog_model trigger_element attrs children =
                , data_state dialog_model.open_close_state
                , Attr.attribute "aria-controls" <| dialog_model.dialog_id ++ "-controls"
                , Attr.attribute "aria-describeby" <| dialog_model.dialog_id ++ "-describe"
-               , Attr.attribute "aria-labelby" <| dialog_model.dialog_id ++ "-label"
+               , aria_labelledby <| dialog_model.dialog_id ++ "-label"
                , onClick OpenDialog
                ]
         )

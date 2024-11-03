@@ -6,6 +6,7 @@ import Route exposing (..)
 import Toasty
 import Toasty.Defaults
 import UI.Dialog exposing (DialogModel, init_dialog_model)
+import UI.DropdownMenu exposing (DropdownMenuModel, init_dropdown_menu_model)
 
 
 type alias UserSettingsLocalStorage =
@@ -21,6 +22,7 @@ type alias Model =
     , server_version : WebData String
     , users : WebData (List String)
     , user_profile_dialog : DialogModel
+    , user_dropdown_menu : DropdownMenuModel
     , count : Int
     , key : Nav.Key
     , route : Route
@@ -36,6 +38,7 @@ init_model key route =
     , server_version = NotAsked
     , users = NotAsked
     , user_profile_dialog = init_dialog_model "user-profile-dialog"
+    , user_dropdown_menu = init_dropdown_menu_model "user-dropdown-menu"
     , user_settings = { dark_mode = True }
     , count = 0
     , key = key

@@ -12,6 +12,7 @@ import Toasty
 import Toasty.Defaults
 import Types exposing (..)
 import UI.Dialog as Dialog
+import UI.DropdownMenu as DropdownMenu exposing (DropdownMenuMsg)
 import Url exposing (Url)
 import Utils exposing (..)
 
@@ -23,6 +24,7 @@ type Msg
     | ToastyMsg (Toasty.Msg Toasty.Defaults.Toast)
     | UserMsg (WebData (List String))
     | UserProfileDialogMsg Dialog.DialogMsg
+    | UserDropdownMenu DropdownMenuMsg
     | Decrement
     | ChangedUrl Url
     | ClickedLink Browser.UrlRequest
@@ -31,6 +33,11 @@ type Msg
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
+        UserDropdownMenu dm_msg ->
+            ( { model | user_dropdown_menu = DropdownMenu.update_dropdown_menu dm_msg model.user_dropdown_menu }
+            , Cmd.none
+            )
+
         UserProfileDialogMsg dialog_msg ->
             ( { model | user_profile_dialog = Dialog.update_dialog dialog_msg model.user_profile_dialog }, Cmd.none )
 
