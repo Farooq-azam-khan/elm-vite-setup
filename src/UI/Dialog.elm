@@ -1,7 +1,25 @@
-module UI.Dialog exposing (dialog, dialog_content, dialog_description, dialog_footer, dialog_header, dialog_title, dialog_trigger)
+module UI.Dialog exposing
+    ( DialogModel
+    , DialogMsg(..)
+    , aria_expanded
+    , data_state
+    , dialog
+    , dialog_content
+    , dialog_description
+    , dialog_footer
+    , dialog_header
+    , dialog_title
+    , dialog_trigger
+    , init_dialog_model
+    , update_dialog
+    )
 
 import Html exposing (..)
 import Html.Attributes as Attr exposing (class)
+import Html.Events exposing (onClick)
+import UI.Button as Button
+import UI.Common exposing (..)
+import UI.Icons as Icons
 
 
 
@@ -9,12 +27,69 @@ import Html.Attributes as Attr exposing (class)
 -- https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Roles/dialog_role
 
 
-init =
-    ()
+type OpenClosedState
+    = OpenState
+    | ClosedState
 
 
-update =
-    ()
+toggle_open_closed_state : OpenClosedState -> OpenClosedState
+toggle_open_closed_state pstate =
+    case pstate of
+        OpenState ->
+            ClosedState
+
+        ClosedState ->
+            OpenState
+
+
+aria_expanded : OpenClosedState -> Attribute msg
+aria_expanded state =
+    Attr.attribute "aria-expanded" <|
+        case state of
+            OpenState ->
+                "true"
+
+            ClosedState ->
+                "false"
+
+
+data_state : OpenClosedState -> Attribute msg
+data_state state =
+    Attr.attribute "data-state" <|
+        case state of
+            OpenState ->
+                "open"
+
+            ClosedState ->
+                "closed"
+
+
+type alias DialogModel =
+    { open_close_state : OpenClosedState, dialog_id : String }
+
+
+init_dialog_model : String -> DialogModel
+init_dialog_model id =
+    { dialog_id = id, open_close_state = ClosedState }
+
+
+type DialogMsg
+    = OpenDialog
+    | CloseDialog
+    | ToggleDialog
+
+
+update_dialog : DialogMsg -> DialogModel -> DialogModel
+update_dialog d_msg d_model =
+    case d_msg of
+        OpenDialog ->
+            { d_model | open_close_state = OpenState }
+
+        CloseDialog ->
+            { d_model | open_close_state = ClosedState }
+
+        ToggleDialog ->
+            { d_model | open_close_state = toggle_open_closed_state d_model.open_close_state }
 
 
 dialog : List (Attribute msg) -> List (Html msg) -> Html msg
@@ -22,9 +97,23 @@ dialog attrs children =
     div attrs children
 
 
-dialog_content : List (Attribute msg) -> List (Html msg) -> Html msg
+dialog_content : List (Attribute DialogMsg) -> List (Html DialogMsg) -> Html DialogMsg
 dialog_content attrs children =
-    div (attrs ++ [ Attr.attribute "role" "dialog", class "fixed inset-0 grid gap-4 border p-6 sm:rounded-lg" ]) children
+    div
+        (attrs
+            ++ [ Attr.attribute "role" "dialog"
+               , class "fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border bg-background p-6 shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%] sm:rounded-lg sm:max-w-[425px]"
+               , Attr.tabindex -1
+               ]
+        )
+        (children
+            ++ [ Button.button { variant = Button.NoVariant, size = Button.NoSize }
+                    [ class "absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground"
+                    , onClick CloseDialog
+                    ]
+                    [ Icons.close_icon "w-4 h-4" ]
+               ]
+        )
 
 
 dialog_description : List (Attribute msg) -> List (Html msg) -> Html msg
@@ -34,7 +123,7 @@ dialog_description attrs children =
 
 dialog_footer : List (Attribute msg) -> List (Html msg) -> Html msg
 dialog_footer attrs children =
-    div (attrs ++ [ class "flex flex-col-reverse sm:flex-row sm:space-x-2 sm:justify-start" ]) children
+    div (attrs ++ [ class "flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2" ]) children
 
 
 dialog_header : List (Attribute msg) -> List (Html msg) -> Html msg
@@ -47,6 +136,12 @@ dialog_title attrs children =
     h2 (attrs ++ [ class "text-lg font-semibold leading-none tracking-tight" ]) children
 
 
-dialog_trigger : List (Attribute msg) -> List (Html msg) -> Html msg
-dialog_trigger attrs children =
-    div attrs children
+dialog_trigger : (List (Attribute msg) -> List (Html msg) -> Html msg) -> List (Attribute msg) -> List (Html msg) -> Html msg
+dialog_trigger trigger_element attrs children =
+    trigger_element
+        (attrs
+            ++ [ Attr.type_ "button"
+               , aria_haspopup "dialog"
+               ]
+        )
+        children

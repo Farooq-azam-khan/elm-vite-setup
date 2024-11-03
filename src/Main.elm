@@ -5,7 +5,7 @@ import Api exposing (..)
 import Browser
 import Browser.Navigation as Nav
 import Html exposing (..)
-import Html.Attributes exposing (class)
+import Html.Attributes as Attr exposing (class)
 import Html.Events exposing (onClick)
 import RemoteData exposing (RemoteData(..))
 import Route exposing (Route(..), parse_url)
@@ -15,6 +15,7 @@ import Toasty.Defaults
 import Types exposing (..)
 import UI.Button as Button
 import UI.Card as Card
+import UI.Dialog as Dialog
 import Url exposing (Url)
 
 
@@ -22,10 +23,10 @@ import Url exposing (Url)
 -- Pages
 
 
-components_page : Html Msg
-components_page =
+components_page : Model -> Html Msg
+components_page { user_profile_dialog } =
     div
-        [ class "font-poppins-sans mx-5 sm:mx-0 sm:mx-auto lg sm:max-w-xl lg:max-w-3xl mt-10 space-x-10" ]
+        [ class "space-y-10 font-poppins-sans mx-5 sm:mx-0 sm:mx-auto sm:max-w-xl lg:max-w-3xl mt-10 " ]
         [ Card.card []
             [ Card.card_header [] [ Card.card_title [] [ text "Test Card Title" ], Card.card_description [] [ text "Test card description" ] ]
             , Card.card_content [] [ text "Test card content" ]
@@ -34,6 +35,48 @@ components_page =
                 , Button.button { variant = Button.DefaultVariant, size = Button.DefaultSize } [] [ text "Do Action" ]
                 ]
             ]
+        , Html.map UserProfileDialogMsg <|
+            Dialog.dialog []
+                [ Dialog.dialog_trigger
+                    (Button.button { variant = Button.Outline, size = Button.DefaultSize })
+                    [ Dialog.aria_expanded user_profile_dialog.open_close_state
+                    , Dialog.data_state user_profile_dialog.open_close_state
+                    , Attr.attribute "aria-controls" <| user_profile_dialog.dialog_id ++ "-controls"
+                    , Attr.attribute "aria-describeby" <| user_profile_dialog.dialog_id ++ "-describe"
+                    , Attr.attribute "aria-labelby" <| user_profile_dialog.dialog_id ++ "-label"
+                    , onClick Dialog.OpenDialog
+                    ]
+                    [ text "Edit Profile" ]
+                , Dialog.dialog_content
+                    [ Attr.id <| user_profile_dialog.dialog_id ++ "-controls"
+                    , Dialog.data_state user_profile_dialog.open_close_state
+                    , Attr.attribute "aria-describeby" <| user_profile_dialog.dialog_id ++ "-describe"
+                    , Attr.attribute "aria-labelby" <| user_profile_dialog.dialog_id ++ "-label"
+                    , class "sm:max-w-[425px]"
+                    ]
+                    [ Dialog.dialog_header []
+                        [ Dialog.dialog_title [ Attr.id <| user_profile_dialog.dialog_id ++ "-label" ] [ text "Edit profile" ]
+                        , Dialog.dialog_description [ Attr.id <| user_profile_dialog.dialog_id ++ "-describe" ] [ text "Make changes to your profile." ]
+                        ]
+                    , div [ class "grid gap-4 py-4" ]
+                        [ div [ class "grid grid-cols-4 items-center gap-4" ]
+                            [ label [ Attr.for "name", class "text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-right" ] [ text "Name" ]
+                            , input [ Attr.id "name", class "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 col-span-3" ] []
+                            ]
+                        ]
+                    , div [ class "grid grid-cols-4 items-center gap-4" ]
+                        [ label [ Attr.for "username", class "text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-right" ] [ text "Username" ]
+                        , input [ Attr.id "username", class "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 col-span-3" ] []
+                        ]
+                    , Dialog.dialog_footer
+                        []
+                        [ Button.button { variant = Button.DefaultVariant, size = Button.DefaultSize }
+                            []
+                            [ text "Save changes"
+                            ]
+                        ]
+                    ]
+                ]
         ]
 
 
@@ -106,7 +149,7 @@ view model =
                 home_page model
 
             ComponentsR ->
-                components_page
+                components_page model
 
             UserR _ ->
                 div [] [ text "Comming Soon..." ]

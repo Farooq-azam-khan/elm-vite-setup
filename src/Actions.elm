@@ -11,6 +11,7 @@ import ToastMessages exposing (..)
 import Toasty
 import Toasty.Defaults
 import Types exposing (..)
+import UI.Dialog as Dialog
 import Url exposing (Url)
 import Utils exposing (..)
 
@@ -21,6 +22,7 @@ type Msg
     | GetUsers
     | ToastyMsg (Toasty.Msg Toasty.Defaults.Toast)
     | UserMsg (WebData (List String))
+    | UserProfileDialogMsg Dialog.DialogMsg
     | Decrement
     | ChangedUrl Url
     | ClickedLink Browser.UrlRequest
@@ -29,6 +31,9 @@ type Msg
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
+        UserProfileDialogMsg dialog_msg ->
+            ( { model | user_profile_dialog = Dialog.update_dialog dialog_msg model.user_profile_dialog }, Cmd.none )
+
         Version (Success server_version) ->
             let
                 is_local_version_out_of_date =

@@ -16,6 +16,7 @@ type ButtonVariant
     | Secondary
     | Ghost
     | Link
+    | NoVariant
 
 
 type ButtonSize
@@ -23,6 +24,7 @@ type ButtonSize
     | Sm
     | Lg
     | Icon
+    | NoSize
 
 
 btn_class : String
@@ -61,6 +63,9 @@ get_button_variant_styles v =
         Link ->
             "text-primary underline-offset-4 hover:underline"
 
+        NoVariant ->
+            ""
+
 
 get_button_size_styles : ButtonSize -> String
 get_button_size_styles sz =
@@ -76,6 +81,9 @@ get_button_size_styles sz =
 
         Icon ->
             "h-9 w-9"
+
+        NoSize ->
+            ""
 
 
 

@@ -5,6 +5,7 @@ import RemoteData exposing (RemoteData(..), WebData)
 import Route exposing (..)
 import Toasty
 import Toasty.Defaults
+import UI.Dialog exposing (DialogModel, init_dialog_model)
 
 
 type alias UserSettingsLocalStorage =
@@ -19,6 +20,7 @@ type alias Model =
     { local_version : Maybe String
     , server_version : WebData String
     , users : WebData (List String)
+    , user_profile_dialog : DialogModel
     , count : Int
     , key : Nav.Key
     , route : Route
@@ -33,6 +35,7 @@ init_model key route =
     , route = route
     , server_version = NotAsked
     , users = NotAsked
+    , user_profile_dialog = init_dialog_model "user-profile-dialog"
     , user_settings = { dark_mode = True }
     , count = 0
     , key = key
