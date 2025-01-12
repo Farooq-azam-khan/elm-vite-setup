@@ -1,5 +1,6 @@
 import { defineConfig } from 'vite'
 import elmPlug from 'vite-plugin-elm'
+import react from '@vitejs/plugin-react'
 
 export default defineConfig({
     server: {
@@ -41,5 +42,5 @@ export default defineConfig({
             }
         }
     },
-    plugins: [elmPlug()]
+    plugins: [elmPlug(), react()]
 })

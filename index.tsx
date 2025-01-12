@@ -1,5 +1,10 @@
 import './tailwind.css'
 import { Elm } from './src/Main.elm' 
+import { StrictMode } from 'react'
+import { createRoot } from 'react-dom/client'
+//import './index.css'
+import RApp from './RApp.tsx'
+
 
 const LOCAL_STORAGE_APP_NAME_PREFIX = 'webux'
 const user_settings_key = `${LOCAL_STORAGE_APP_NAME_PREFIX}_user_settings`
@@ -30,6 +35,15 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log('hard refresh')
         location.reload(true)
     })
+
+    // react 
+
+createRoot(document.getElementById('react')!).render(
+  <StrictMode>
+    <RApp />
+  </StrictMode>,
+)
+
     
 })
 
