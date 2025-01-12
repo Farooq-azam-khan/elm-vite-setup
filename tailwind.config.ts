@@ -7,7 +7,7 @@ import { fontFamily } from "tailwindcss/defaultTheme"
 export default {
   darkMode: 'class',
   content: [
-    "./**/*.{html,ts,js,elm}",
+    "./src/**/*.{html,ts,js,elm}",
   ],
   theme: {
     container: {
