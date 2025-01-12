@@ -20,6 +20,7 @@ import UI.Dialog as Dialog
 import UI.DropdownMenu as DropdownMenu
 import UI.Icons as Icons
 import Url exposing (Url)
+import Url.Builder exposing (absolute)
 
 
 
@@ -247,6 +248,23 @@ home_page model =
             ]
         ]
 
+view2 : Model -> Html  Msg
+view2 model =
+        div [] [ case model.route of
+            HomeR ->
+                home_page model
+
+            ComponentsR ->
+                components_page model
+
+            UserR _ ->
+                div [] [ text "Comming Soon..." ]
+
+            NotFoundR ->
+                div [] [ text "Route Not Found" ]
+        , Toasty.view toast_config Toasty.Defaults.view ToastyMsg model.toasties
+        ]
+
 
 view : Model -> Browser.Document Msg
 view model =
@@ -270,9 +288,28 @@ view model =
 
 
 type alias Flags =
-    { local_version : Maybe String }
+    { local_version : Maybe String , location: String }
 
 
+init2 : Flags ->  ( Model, Cmd Msg )
+init2 flags =
+    let 
+        mb_url = (Url.fromString flags.location) 
+        route = case mb_url of
+                Just url -> parse_url url
+                Nothing -> HomeR
+    in 
+    ( init_model2 route
+        |> (\m ->
+                { m
+                    | local_version = flags.local_version
+                    , server_version = Loading
+                }
+           )
+    , api_get_version Version
+    
+    )
+{-
 init : Flags -> Url -> Nav.Key -> ( Model, Cmd Msg )
 init flags url key =
     ( init_model key (parse_url url)
@@ -284,8 +321,10 @@ init flags url key =
            )
     , api_get_version Version
     )
-
-
+-}
+main : Program Flags Model Msg 
+main = Browser.element {init=init2, view=view2,update=update,subscriptions=subscriptions} 
+{-
 main : Program Flags Model Msg
 main =
     Browser.application
@@ -296,3 +335,4 @@ main =
         , onUrlChange = ChangedUrl
         , onUrlRequest = ClickedLink
         }
+-}

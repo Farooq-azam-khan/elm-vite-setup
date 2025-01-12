@@ -26,8 +26,8 @@ type Msg
     | UserProfileDialogMsg Dialog.DialogMsg
     | UserDropdownMenu DropdownMenuMsg
     | Decrement
-    | ChangedUrl Url
-    | ClickedLink Browser.UrlRequest
+    --| ChangedUrl Url
+    --| ClickedLink Browser.UrlRequest
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -71,6 +71,7 @@ update msg model =
         Decrement ->
             ( { model | count = model.count |> update_by -1 }, Cmd.none )
 
+        {-
         ChangedUrl url ->
             ( model, Cmd.none )
 
@@ -80,8 +81,8 @@ update msg model =
                     ( model, Nav.load href )
 
                 Browser.Internal url ->
-                    ( model, Nav.pushUrl model.key (Url.toString url) )
-
+                    (model, Cmd.none) -- ( model, Nav.pushUrl model.key (Url.toString url) )
+        -}
 
 subscriptions : Model -> Sub Msg
 subscriptions _ =

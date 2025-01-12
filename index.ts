@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     const local_version = JSON.parse(localStorage.getItem(version_key)) 
-    const flags = {local_version}
+    const flags = {local_version, location:window.location.href}
     const app = Elm.Main.init({
           node: root, 
           flags

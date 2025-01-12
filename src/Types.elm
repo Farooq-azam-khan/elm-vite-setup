@@ -24,13 +24,25 @@ type alias Model =
     , user_profile_dialog : DialogModel
     , user_dropdown_menu : DropdownMenuModel
     , count : Int
-    , key : Nav.Key
     , route : Route
     , user_settings : UserSettingsLocalStorage
     , toasties : Toasty.Stack Toasty.Defaults.Toast
     }
 
+init_model2 : Route -> Model
+init_model2 route =
+    { local_version = Nothing
+    , route = route
+    , server_version = NotAsked
+    , users = NotAsked
+    , user_profile_dialog = init_dialog_model "user-profile-dialog"
+    , user_dropdown_menu = init_dropdown_menu_model "user-dropdown-menu"
+    , user_settings = { dark_mode = True }
+    , count = 0
+    , toasties = Toasty.initialState
+    }
 
+{-
 init_model : Nav.Key -> Route -> Model
 init_model key route =
     { local_version = Nothing
@@ -44,3 +56,4 @@ init_model key route =
     , key = key
     , toasties = Toasty.initialState
     }
+-}
